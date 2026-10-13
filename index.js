@@ -8,7 +8,7 @@ app.disable('x-powered-by');
 app.get('/health', (_req, res) => res.json({
  status:'setup_required', dashboardAvailable:true,
  databaseConfigured:Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_PUBLISHABLE_KEY),
- generationAvailable:false, publishingAvailable:false,
+ generationAvailable:false, publishingAvailable:false, browserEditorAvailable:true,
  blockers:['background_worker','provider_credentials','youtube_oauth']
 }));
 app.get('/api/config',(_req,res)=>{

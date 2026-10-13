@@ -1,6 +1,9 @@
 const express = require('express');
 const path = require('path');
+const {createScriptHandler,scriptEnabled} = require('./utils/cloud-script-handler');
 const app = express();
+app.use(express.json({limit:'8kb'}));
+app.post('/api/script',createScriptHandler());
 app.disable('x-powered-by');
 app.get('/health', (_req, res) => res.json({
  status:'setup_required', dashboardAvailable:true,
@@ -11,7 +14,7 @@ app.get('/health', (_req, res) => res.json({
 app.get('/api/config',(_req,res)=>{
  res.set('Cache-Control','no-store');
  if(!process.env.SUPABASE_URL || !process.env.SUPABASE_PUBLISHABLE_KEY) return res.status(503).json({error:'Database connection is not configured'});
- res.json({url:process.env.SUPABASE_URL,key:process.env.SUPABASE_PUBLISHABLE_KEY});
+ res.json({url:process.env.SUPABASE_URL,key:process.env.SUPABASE_PUBLISHABLE_KEY,scriptEnabled:scriptEnabled()});
 });
 app.use(express.static(path.join(__dirname,'cloud'),{index:'index.html'}));
 app.use((_req,res)=>res.status(503).json({success:false,error:'Video generation and publishing are not configured',code:'CLOUD_SETUP_REQUIRED'}));
